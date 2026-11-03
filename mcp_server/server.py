@@ -11,6 +11,7 @@ Run / register:
 import functools
 from collections.abc import Callable
 
+import httpx
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
 
@@ -27,7 +28,7 @@ def _expected_errors_as_tool_errors(fn: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         try:
             return fn(*args, **kwargs)
-        except (ValueError, LookupError, SyntaxError, ZeroDivisionError) as e:
+        except (ValueError, LookupError, SyntaxError, ZeroDivisionError, httpx.HTTPError) as e:
             raise ToolError(f"{type(e).__name__}: {e}") from e
 
     return wrapper

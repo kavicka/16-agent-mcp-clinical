@@ -69,6 +69,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--variants", nargs="+", default=["no_tools", "agent", "agent_mcp"])
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--tag", default="", help="suffix for the result key, e.g. v2 after changing tool descriptions")
     args = ap.parse_args()
     # record: answer from the committed cache, fetch + store anything new. A pure replay cache made every query the
     # task builder hadn't anticipated (e.g. max_results=10 instead of 25) fail, which punished valid agent behaviour.
@@ -83,6 +84,7 @@ def main() -> None:
                    "hardware": f"{platform.system()} {platform.machine()}", "n_tasks": len(tasks),
                    "cache": os.environ["CTGOV_CACHE"]}  # fmt: skip
     for v in args.variants:
+        key = f"{v}_{args.tag}" if args.tag else v
         tools = None
         if v == "agent":
             tools = DirectToolBox()
@@ -94,12 +96,14 @@ def main() -> None:
         for t in tasks:
             tr = run_no_tools(t["task"], llm) if tools is None else run_agent(t["task"], llm, tools)
             recs.append({"id": t["id"], "type": t["type"], "success": is_success(t, tr.answer), **tr.to_dict()})
-            print(v, t["id"], t["type"], recs[-1]["success"], tr.n_tool_calls, repr(tr.answer[:100]), flush=True)
+            print(key, t["id"], t["type"], recs[-1]["success"], tr.n_tool_calls, repr(tr.answer[:100]), flush=True)
         if v == "agent_mcp":
             tools.close()
-        (RUNS / f"{v}.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in recs))
+        (RUNS / f"{key}.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in recs))
         n_calls = sum(r["n_tool_calls"] for r in recs)
-        out[v] = {
+        out[key] = {
+            "measured_at": datetime.now(UTC).isoformat(timespec="seconds"),
+            "cache_mode": os.environ["CTGOV_CACHE"],
             "success": round(statistics.mean(r["success"] for r in recs), 3),
             "tool_calls_per_task": round(n_calls / len(recs), 2),
             "tool_error_rate": round(sum(r["n_tool_errors"] for r in recs) / n_calls, 3) if n_calls else None,
@@ -112,7 +116,7 @@ def main() -> None:
                 for k in sorted({r["type"] for r in recs})
             },  # fmt: skip
         }
-        print(v, {k: x for k, x in out[v].items() if k != "by_type"}, flush=True)
+        print(key, {k: x for k, x in out[key].items() if k != "by_type"}, flush=True)
         merge("agent", out)
 
 

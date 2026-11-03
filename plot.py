@@ -13,7 +13,14 @@ import numpy as np
 R = json.loads(Path("results.json").read_text())["agent"]
 Path("assets").mkdir(exist_ok=True)
 BLUE, RED, GREEN, GRAY, ORANGE, DARK = "#2563eb", "#dc2626", "#16a34a", "#94a3b8", "#ea580c", "#1e293b"
-COLORS = {"no_tools": GRAY, "agent": BLUE, "agent_mcp": GREEN}
+COLORS = {"no_tools": GRAY, "agent": "#93c5fd", "agent_mcp": "#86efac", "agent_v2": BLUE, "agent_mcp_v2": GREEN}
+LABELS = {
+    "no_tools": "LLM alone",
+    "agent": "agent, tools v1",
+    "agent_mcp": "agent over MCP, tools v1",
+    "agent_v2": "agent, tools v2",
+    "agent_mcp_v2": "agent over MCP, tools v2",
+}
 TYPES = ["lookup", "count", "earliest", "sponsor", "compare", "aggregate"]
 
 
@@ -30,17 +37,18 @@ def success() -> None:
     w = 0.8 / len(variants)
     for j, v in enumerate(variants):
         vals = [R[v]["by_type"].get(t, 0) for t in TYPES] + [R[v]["success"]]
-        bars = ax.bar(x + (j - (len(variants) - 1) / 2) * w, vals, w, color=COLORS[v], label=v)
-        ax.bar_label(bars, fmt="%.2f", fontsize=7)
-    ax.set(xticks=x, xticklabels=[*TYPES, "ALL"], ylim=(0, 1.12), ylabel="success rate")
+        bars = ax.bar(x + (j - (len(variants) - 1) / 2) * w, vals, w, color=COLORS[v], label=LABELS[v])
+        ax.bar_label(bars, fmt="%.2f", fontsize=5, rotation=90, padding=2)
+    ax.set(xticks=x, xticklabels=[*TYPES, "ALL"], ylim=(0, 1.3), ylabel="success rate")
     ax.set_title(f"{R['meta']['n_tasks']} tasks · {R['meta']['llm']} · {R['meta']['hardware']}", fontsize=10)
-    ax.legend(fontsize=8, loc="upper right")
+    ax.legend(fontsize=7, loc="upper center", ncol=5)
     ax.grid(alpha=0.3, axis="y")
     save(fig, "success.png")
 
 
 def trace() -> None:
-    runs = Path("eval/runs/agent.jsonl")
+    """One agent run as a sequence of messages: the step's visual example of what "an agent" actually does."""
+    runs = Path("eval/runs/agent_v2.jsonl")
     if not runs.exists():
         return
     recs = [json.loads(line) for line in runs.open()]
@@ -48,22 +56,25 @@ def trace() -> None:
     rec = max((r for r in recs if r["success"]), key=lambda r: (r["n_tool_calls"], -r["total_ms"]), default=None)
     if rec is None:
         return
-    fig, ax = plt.subplots(figsize=(10, 2.6 + 0.25 * len(rec["steps"])))
-    t, y = 0.0, 0
-    for i, s in enumerate(rec["steps"], 1):
-        ax.barh(y, s["llm_ms"] / 1000, left=t, color=BLUE, height=0.6)
-        ax.text(t + s["llm_ms"] / 2000, y, f"LLM {i}", ha="center", va="center", color="white", fontsize=8)
-        t += s["llm_ms"] / 1000
-        if s["tool_calls"]:
-            names = ", ".join(c["name"] for c in s["tool_calls"])
-            err = any("error" in r for r in s["results"])
-            ax.barh(y, max(s["tool_ms"] / 1000, 0.3), left=t, color=RED if err else ORANGE, height=0.6)
-            ax.text(t + 0.4, y - 0.45, names, fontsize=8, va="top")
-            t += s["tool_ms"] / 1000
-    ax.set_yticks([])
-    ax.set_xlabel("seconds")
-    ax.set_title(f"Agent trace: {rec['task'][:90]}\nanswer: {rec['answer'][:110]}", fontsize=9, loc="left")
-    ax.set_ylim(-1.2, 0.6)
+    events = [("user", GRAY, rec["task"])]
+    for s in rec["steps"]:
+        for j, (c, r) in enumerate(zip(s["tool_calls"], s["results"], strict=True)):
+            args = ", ".join(f"{k}={v!r}" for k, v in c["arguments"].items())
+            when = f"({s['llm_ms'] / 1000:.1f} s)" if j == 0 else "(same turn)"  # parallel calls come in one turn
+            events.append((f"LLM → tool  {when}", BLUE, f"{c['name']}({args})"))
+            brief = {k: r[k] for k in ("nct_id", "enrollment", "lead_sponsor", "total", "value") if k in r}
+            events.append(("tool → LLM", ORANGE, json.dumps(brief or r)[:110]))
+        if not s["tool_calls"]:
+            events.append((f"LLM answer  ({s['llm_ms'] / 1000:.1f} s)", GREEN, s["content"]))
+    fig, ax = plt.subplots(figsize=(10, 0.55 * len(events) + 0.6))
+    for i, (who, color, text) in enumerate(events):
+        y = len(events) - i
+        ax.text(0.01, y, who, fontsize=8, color="white", va="center",
+                bbox={"boxstyle": "round,pad=0.35", "fc": color, "ec": color})  # fmt: skip
+        ax.text(0.22, y, text if len(text) < 120 else text[:117] + "…", fontsize=8, va="center", family="monospace")
+    ax.set(xlim=(0, 1), ylim=(0.4, len(events) + 0.6))
+    ax.axis("off")
+    ax.set_title(f"One agent run, {rec['total_ms'] / 1000:.0f} s on CPU", fontsize=10, loc="left")
     save(fig, "trace.png")
 
 

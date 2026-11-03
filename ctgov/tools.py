@@ -10,15 +10,22 @@ import ast
 import inspect
 import operator
 from collections.abc import Callable
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
-from pydantic import ValidationError, create_model
+import httpx
+from pydantic import Field, ValidationError, create_model
 
 from ctgov import client
 
 Phase = Literal["EARLY_PHASE1", "PHASE1", "PHASE2", "PHASE3", "PHASE4"]
 Status = Literal["COMPLETED", "RECRUITING", "ACTIVE_NOT_RECRUITING", "TERMINATED", "WITHDRAWN", "NOT_YET_RECRUITING"]
 LIST_FIELDS = "NCTId,BriefTitle,Phase,OverallStatus,EnrollmentCount,LeadSponsorName,StartDate"
+
+# v2 of the tool descriptions (v1 had docstrings only, see README): every argument says what goes in it, with an
+# example. The v1 eval showed why: the model put the drug name into `condition` and dropped `intervention`.
+Condition = Annotated[str | None, Field(description="the disease, e.g. 'psoriasis' or 'type 2 diabetes'")]
+Intervention = Annotated[str | None, Field(description="the drug or treatment, e.g. 'bimekizumab'")]
+Sponsor = Annotated[str | None, Field(description="the sponsor organisation, e.g. 'Pfizer'")]
 
 
 def _query(condition: str | None, intervention: str | None, phase: str | None, status: str | None, sponsor: str | None):
@@ -50,16 +57,16 @@ def _brief(study: dict) -> dict:
 
 
 def search_trials(
-    condition: str | None = None,
-    intervention: str | None = None,
+    condition: Condition = None,
+    intervention: Intervention = None,
     phase: Phase | None = None,
     status: Status | None = None,
-    sponsor: str | None = None,
-    max_results: int = 10,
+    sponsor: Sponsor = None,
+    max_results: Annotated[int, Field(description="how many trials to list, at most 25")] = 10,
 ) -> dict:
-    """Search ClinicalTrials.gov. Returns the total number of matches and up to max_results trials
-    (nct_id, title, phases, status, enrollment, lead_sponsor, start_date), oldest start date first.
-    Give at least one of condition, intervention or sponsor."""
+    """Search ClinicalTrials.gov. If the question names a drug AND a disease, pass the disease as `condition`
+    AND the drug as `intervention`. Returns `total` (the number of ALL matching trials) and up to max_results
+    trials (nct_id, title, phases, status, enrollment, lead_sponsor, start_date), oldest start date first."""
     q = _query(condition, intervention, phase, status, sponsor)
     if not any(k.startswith("query.") for k in q):
         raise ValueError("give at least one of condition, intervention or sponsor")
@@ -70,13 +77,14 @@ def search_trials(
 
 
 def count_trials(
-    condition: str | None = None,
-    intervention: str | None = None,
+    condition: Condition = None,
+    intervention: Intervention = None,
     phase: Phase | None = None,
     status: Status | None = None,
-    sponsor: str | None = None,
+    sponsor: Sponsor = None,
 ) -> dict:
-    """Count trials on ClinicalTrials.gov matching the filters, without listing them."""
+    """Answer "how many trials …" questions: counts the trials matching the filters without listing them.
+    If the question names a drug AND a disease, pass the disease as `condition` AND the drug as `intervention`."""
     q = _query(condition, intervention, phase, status, sponsor)
     if not any(k.startswith("query.") for k in q):
         raise ValueError("give at least one of condition, intervention or sponsor")
@@ -110,9 +118,9 @@ _OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, as
         ast.USub: operator.neg, ast.Pow: operator.pow}  # fmt: skip
 
 
-def calculator(expression: str) -> dict:
-    """Evaluate an arithmetic expression with + - * / ** and parentheses, e.g. "(553 + 133) / 2".
-    Use it for every sum, difference or average instead of computing in your head."""
+def calculator(expression: Annotated[str, Field(description="e.g. '1307 + 684 + 1305'")]) -> dict:
+    """Evaluate an arithmetic expression with + - * / ** and parentheses, e.g. "1307 + 684 + 1305" or
+    "(553 + 133) / 2". Use it for every sum (e.g. total enrollment), difference or average."""
 
     def ev(n: ast.AST) -> float:
         if isinstance(n, ast.Constant) and isinstance(n.value, int | float):
@@ -167,5 +175,5 @@ def call_tool(name: str, arguments: dict) -> dict:
             "error": "invalid arguments: "
             + "; ".join(f"{'.'.join(map(str, x['loc']))}: {x['msg']}" for x in e.errors())
         }
-    except (ValueError, LookupError, SyntaxError, ZeroDivisionError) as e:
+    except (ValueError, LookupError, SyntaxError, ZeroDivisionError, httpx.HTTPError) as e:
         return {"error": f"{type(e).__name__}: {e}"}
