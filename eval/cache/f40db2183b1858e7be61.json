@@ -1,0 +1,1 @@
+{"params": {"countTotal": "true", "fields": "NCTId", "filter.advanced": "AREA[Phase]PHASE3", "filter.overallStatus": "COMPLETED", "pageSize": 1, "query.cond": "asthma", "query.intr": "dupilumab"}, "response": {"nextPageToken": "ZVNj7o2Elu8o3lpyDNCk5rLumpOQJJxsY_mi2v0W", "studies": [{"protocolSection": {"identificationModule": {"nctId": "NCT02134028"}}}], "totalCount": 8}}

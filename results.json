@@ -1,0 +1,100 @@
+{
+ "agent": {
+  "meta": {
+   "date": "2026-11-03T20:21:06+00:00",
+   "llm": "transformers:Qwen/Qwen3-1.7B",
+   "hardware": "Linux x86_64",
+   "n_tasks": 33,
+   "cache": "record"
+  },
+  "no_tools": {
+   "success": 0,
+   "tool_calls_per_task": 0.0,
+   "tool_error_rate": null,
+   "malformed_calls": 0,
+   "hit_max_steps": 0,
+   "latency_s_p50": 1,
+   "latency_s_p95": 13,
+   "by_type": {
+    "aggregate": 0,
+    "compare": 0,
+    "count": 0,
+    "earliest": 0,
+    "lookup": 0,
+    "sponsor": 0
+   }
+  },
+  "agent": {
+   "success": 0.697,
+   "tool_calls_per_task": 1.18,
+   "tool_error_rate": 0.0,
+   "malformed_calls": 0,
+   "hit_max_steps": 0,
+   "latency_s_p50": 58,
+   "latency_s_p95": 286,
+   "by_type": {
+    "aggregate": 0,
+    "compare": 1,
+    "count": 0.167,
+    "earliest": 0.667,
+    "lookup": 1,
+    "sponsor": 1
+   }
+  },
+  "agent_mcp": {
+   "success": 0.515,
+   "tool_calls_per_task": 1.18,
+   "tool_error_rate": 0.103,
+   "malformed_calls": 0,
+   "hit_max_steps": 0,
+   "latency_s_p50": 21,
+   "latency_s_p95": 62,
+   "by_type": {
+    "aggregate": 0,
+    "compare": 0.833,
+    "count": 0,
+    "earliest": 0.667,
+    "lookup": 1,
+    "sponsor": 0.333
+   }
+  },
+  "agent_v2": {
+   "measured_at": "2026-11-03T20:20:51+00:00",
+   "cache_mode": "record",
+   "success": 0.939,
+   "tool_calls_per_task": 1.24,
+   "tool_error_rate": 0.0,
+   "malformed_calls": 0,
+   "hit_max_steps": 0,
+   "latency_s_p50": 23,
+   "latency_s_p95": 65,
+   "by_type": {
+    "aggregate": 0.333,
+    "compare": 1,
+    "count": 1,
+    "earliest": 1,
+    "lookup": 1,
+    "sponsor": 1
+   }
+  },
+  "agent_mcp_v2": {
+   "measured_at": "2026-11-03T20:38:23+00:00",
+   "cache_mode": "record",
+   "success": 0.939,
+   "tool_calls_per_task": 1.21,
+   "tool_error_rate": 0.0,
+   "malformed_calls": 0,
+   "hit_max_steps": 0,
+   "latency_s_p50": 24,
+   "latency_s_p95": 81,
+   "by_type": {
+    "aggregate": 0.333,
+    "compare": 1,
+    "count": 1,
+    "earliest": 1,
+    "lookup": 1,
+    "sponsor": 1
+   }
+  }
+ }
+}

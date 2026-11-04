@@ -1,0 +1,33 @@
+{"type": "count", "task": "How many completed Phase 3 trials of esketamine for depression are registered on ClinicalTrials.gov?", "gold": 12, "id": "t00"}
+{"type": "count", "task": "How many completed Phase 3 trials of dupilumab for asthma are registered on ClinicalTrials.gov?", "gold": 8, "id": "t01"}
+{"type": "count", "task": "How many completed Phase 3 trials of upadacitinib for rheumatoid arthritis are registered on ClinicalTrials.gov?", "gold": 8, "id": "t02"}
+{"type": "count", "task": "How many completed Phase 3 trials of vortioxetine for depression are registered on ClinicalTrials.gov?", "gold": 30, "id": "t03"}
+{"type": "count", "task": "How many completed Phase 3 trials of bimekizumab for psoriasis are registered on ClinicalTrials.gov?", "gold": 13, "id": "t04"}
+{"type": "count", "task": "How many completed Phase 3 trials of empagliflozin for type 2 diabetes are registered on ClinicalTrials.gov?", "gold": 34, "id": "t05"}
+{"type": "lookup", "task": "How many participants were enrolled in trial NCT06750289?", "gold": 130, "id": "t06"}
+{"type": "lookup", "task": "How many participants were enrolled in trial NCT01842607?", "gold": 651, "id": "t07"}
+{"type": "lookup", "task": "How many participants were enrolled in trial NCT02528214?", "gold": 210, "id": "t08"}
+{"type": "lookup", "task": "How many participants were enrolled in trial NCT01370005?", "gold": 825, "id": "t09"}
+{"type": "lookup", "task": "How many participants were enrolled in trial NCT02422186?", "gold": 139, "id": "t10"}
+{"type": "lookup", "task": "How many participants were enrolled in trial NCT03861052?", "gold": 636, "id": "t11"}
+{"type": "earliest", "task": "Which of the completed Phase 3 trials of upadacitinib for rheumatoid arthritis started first? Give its NCT id.", "gold": "NCT02675426", "id": "t12"}
+{"type": "earliest", "task": "Which of the completed Phase 3 trials of mepolizumab for asthma started first? Give its NCT id.", "gold": "NCT01691859", "id": "t13"}
+{"type": "earliest", "task": "Which of the completed Phase 3 trials of baricitinib for rheumatoid arthritis started first? Give its NCT id.", "gold": "NCT01710358", "id": "t14"}
+{"type": "earliest", "task": "Which of the completed Phase 3 trials of tirzepatide for type 2 diabetes started first? Give its NCT id.", "gold": "NCT03730662", "id": "t15"}
+{"type": "earliest", "task": "Which of the completed Phase 3 trials of tofacitinib for rheumatoid arthritis started first? Give its NCT id.", "gold": "NCT00413699", "id": "t16"}
+{"type": "earliest", "task": "Which of the completed Phase 3 trials of bimekizumab for psoriasis started first? Give its NCT id.", "gold": "NCT03370133", "id": "t17"}
+{"type": "sponsor", "task": "Who is the lead sponsor of the earliest-starting of the completed Phase 3 trials of ixekizumab for psoriasis?", "gold": "Eli Lilly and Company", "id": "t18"}
+{"type": "sponsor", "task": "Who is the lead sponsor of the earliest-starting of the completed Phase 3 trials of benralizumab for asthma?", "gold": "AstraZeneca", "id": "t19"}
+{"type": "sponsor", "task": "Who is the lead sponsor of the earliest-starting of the completed Phase 3 trials of tofacitinib for rheumatoid arthritis?", "gold": "Pfizer", "id": "t20"}
+{"type": "sponsor", "task": "Who is the lead sponsor of the earliest-starting of the completed Phase 3 trials of esketamine for depression?", "gold": "Janssen Research & Development, LLC", "id": "t21"}
+{"type": "sponsor", "task": "Who is the lead sponsor of the earliest-starting of the completed Phase 3 trials of tirzepatide for type 2 diabetes?", "gold": "Eli Lilly and Company", "id": "t22"}
+{"type": "sponsor", "task": "Who is the lead sponsor of the earliest-starting of the completed Phase 3 trials of dupilumab for asthma?", "gold": "Sanofi", "id": "t23"}
+{"type": "compare", "task": "Which of the trials NCT05024032 and NCT05691712 enrolled more participants, and by how many?", "gold": {"winner": "NCT05691712", "diff": 47}, "id": "t24"}
+{"type": "compare", "task": "Which of the trials NCT00856544 and NCT00413699 enrolled more participants, and by how many?", "gold": {"winner": "NCT00413699", "diff": 3693}, "id": "t25"}
+{"type": "compare", "task": "Which of the trials NCT01885078 and NCT01710358 enrolled more participants, and by how many?", "gold": {"winner": "NCT01885078", "diff": 1570}, "id": "t26"}
+{"type": "compare", "task": "Which of the trials NCT01885208 and NCT03552757 enrolled more participants, and by how many?", "gold": {"winner": "NCT03552757", "diff": 397}, "id": "t27"}
+{"type": "compare", "task": "Which of the trials NCT03186209 and NCT01914757 enrolled more participants, and by how many?", "gold": {"winner": "NCT01914757", "diff": 1813}, "id": "t28"}
+{"type": "compare", "task": "Which of the trials NCT03021304 and NCT02555371 enrolled more participants, and by how many?", "gold": {"winner": "NCT02555371", "diff": 250}, "id": "t29"}
+{"type": "aggregate", "task": "What is the total enrollment of all completed Phase 3 trials of baricitinib for rheumatoid arthritis?", "gold": 6273, "id": "t30"}
+{"type": "aggregate", "task": "What is the total enrollment of all completed Phase 3 trials of dupilumab for asthma?", "gold": 6083, "id": "t31"}
+{"type": "aggregate", "task": "What is the total enrollment of all completed Phase 3 trials of upadacitinib for rheumatoid arthritis?", "gold": 4489, "id": "t32"}

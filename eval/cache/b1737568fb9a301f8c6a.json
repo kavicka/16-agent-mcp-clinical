@@ -1,0 +1,1 @@
+{"params": {"countTotal": "true", "fields": "NCTId", "filter.advanced": "AREA[Phase]PHASE3", "filter.overallStatus": "COMPLETED", "pageSize": 1, "query.cond": "depression", "query.intr": "vortioxetine"}, "response": {"nextPageToken": "ZVNj7o2Elu8o3lpyDNCk5rLumpOQJJxnZfKl2Pg", "studies": [{"protocolSection": {"identificationModule": {"nctId": "NCT02279953"}}}], "totalCount": 30}}

@@ -1,0 +1,1 @@
+{"params": {"countTotal": "true", "fields": "NCTId", "filter.advanced": "AREA[Phase]PHASE3", "filter.overallStatus": "COMPLETED", "pageSize": 1, "query.cond": "psoriasis", "query.intr": "bimekizumab"}, "response": {"nextPageToken": "ZVNj7o2Elu8o3lpyDNCk5rLumpOQJJxsYPSn1fwW", "studies": [{"protocolSection": {"identificationModule": {"nctId": "NCT04009499"}}}], "totalCount": 13}}

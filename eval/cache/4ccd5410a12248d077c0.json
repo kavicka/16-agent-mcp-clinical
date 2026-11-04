@@ -1,0 +1,1 @@
+{"params": {"countTotal": "true", "fields": "NCTId", "filter.advanced": "AREA[Phase]PHASE3", "filter.overallStatus": "COMPLETED", "pageSize": 1, "query.cond": "depression", "query.intr": "esketamine"}, "response": {"nextPageToken": "ZVNj7o2Elu8o3lpyDNCk5rLumpOQJJxubfak2fUW", "studies": [{"protocolSection": {"identificationModule": {"nctId": "NCT02497287"}}}], "totalCount": 12}}

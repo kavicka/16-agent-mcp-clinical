@@ -1,17 +1,30 @@
 [project]
-name = "nn-short-name"
+name = "agent-mcp-clinical"
 version = "0.1.0"
-description = "One-line description of the step"
+description = "Step 16 · P8: an AI agent loop from scratch and an MCP server over ClinicalTrials.gov"
 requires-python = ">=3.12"
 dependencies = [
-    "matplotlib>=3.11.2",
-    "numpy>=2.5.4",
+    "httpx>=0.28",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "mcp>=1.2",
+    "matplotlib>=3.9",
+    "numpy>=2.1",
 ]
 
+[project.optional-dependencies]
+# Only for running the LLM in-process (cloud CPU / Colab). On the Mac the default is Ollama.
+hf = ["transformers>=4.51", "torch>=2.5"]
+
 [dependency-groups]
-dev = [
-    "ruff>=0.17.3",
-]
+dev = ["ruff>=0.8", "pytest>=8.3"]
 
 [tool.ruff]
 line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
